@@ -1,0 +1,61 @@
+label {
+  font-size: 14px !important;
+  font-weight: normal !important;
+}
+
+label.rm {
+  margin-right: 10px !important;
+}
+
+label.lm20 {
+  margin-left: 20px !important;
+}
+
+
+.el-col .el-date-editor--datetimerange {
+  padding: 0 10px !important;
+}
+
+.el-button {
+  padding: 10px 20px !important;
+}
+
+.pagination-container {
+  text-align: right !important;
+}
+
+.el-tree-node__content {
+  height: 40px !important;
+}
+
+.filter-container {
+  padding-bottom: 0px !important;
+}
+
+
+.filter-container>div {
+  float: left;
+  padding-bottom: 10px !important;
+}
+
+.clearfix:after,
+.clearfix:before {
+  content: "";
+  display: table;
+}
+
+.clearfix:after {
+  clear: both;
+}
+
+.clearfix {
+  zoom: 1;
+}
+
+.fl {
+  float: left !important;
+}
+
+.fr {
+  float: right !important;
+}
