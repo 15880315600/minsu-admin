@@ -100,37 +100,67 @@ export const constantRoutes = [{
     ]
   },
 
-{
-  path: '/notice',
-  component: Layout,
-  redirect: '/notice/notice',
-  name: 'notice',
-  meta: {
-    title: '公告管理',
-    icon: 'el-icon-picture',
-  },
-  children: [{
-      path: 'notice',
-      name: 'noticeIndex',
-      component: () => import('@/views/notice/notice'),
-      meta: {
-        title: '公告列表'
-      }
+  {
+    path: '/notice',
+    component: Layout,
+    redirect: '/notice/notice',
+    name: 'notice',
+    meta: {
+      title: '公告管理',
+      icon: 'el-icon-picture',
     },
-    {
-      path: 'noticeUpdate',
-      name: 'noticeUpdate',
-      hidden: true,
-      component: () => import('@/views/notice/noticeUpdate'),
-      meta: {
-        title: '编辑公告',
-        activeMenu: '/notice/notice'
+    children: [{
+        path: 'notice',
+        name: 'noticeIndex',
+        component: () => import('@/views/notice/notice'),
+        meta: {
+          title: '公告列表'
+        }
+      },
+      {
+        path: 'noticeUpdate',
+        name: 'noticeUpdate',
+        hidden: true,
+        component: () => import('@/views/notice/noticeUpdate'),
+        meta: {
+          title: '编辑公告',
+          activeMenu: '/notice/notice'
+        }
       }
-    }
-  ]
-},
+    ]
+  },
+  
+  {
+    path: '/roomType',
+    component: Layout,
+    redirect: '/roomType/roomType',
+    name: 'roomType',
+    meta: {
+      title: '房间类型管理',
+      icon: 'el-icon-picture',
+    },
+    children: [{
+        path: 'roomType',
+        name: 'roomTypeIndex',
+        component: () => import('@/views/roomType/roomType'),
+        meta: {
+          title: '房间类型列表'
+        }
+      },
+      {
+        path: 'roomTypeUpdate',
+        name: 'roomTypeUpdate',
+        hidden: true,
+        component: () => import('@/views/roomType/roomTypeUpdate'),
+        meta: {
+          title: '编辑房间类型',
+          activeMenu: '/roomType/roomType'
+        }
+      }
+    ]
+  },
 
-{
+  {
     path: '/store',
     component: Layout,
     redirect: '/store/store',
@@ -161,6 +191,36 @@ export const constantRoutes = [{
   },
 
   {
+    path: '/room',
+    component: Layout,
+    redirect: '/room/room',
+    name: 'room',
+    meta: {
+      title: '房间管理',
+      icon: 'el-icon-picture',
+    },
+    children: [{
+        path: 'room',
+        name: 'roomIndex',
+        component: () => import('@/views/room/room'),
+        meta: {
+          title: '房间列表'
+        }
+      },
+      {
+        path: 'roomUpdate',
+        name: 'roomUpdate',
+        hidden: true,
+        component: () => import('@/views/room/roomUpdate'),
+        meta: {
+          title: '编辑房间',
+          activeMenu: '/room/room'
+        }
+      }
+    ]
+  },
+
+  {
     path: '/admin',
     component: Layout,
     redirect: '/admin/admin',
@@ -170,14 +230,13 @@ export const constantRoutes = [{
       icon: 'el-icon-user-solid'
     },
     children: [{
-        path: 'admin',
-        name: 'AdminIndex',
-        component: () => import('@/views/admin/admin'),
-        meta: {
-          title: '人员管理',
-        }
+      path: 'admin',
+      name: 'AdminIndex',
+      component: () => import('@/views/admin/admin'),
+      meta: {
+        title: '人员管理',
       }
-    ]
+    }]
   },
 
   // 404 page must be placed at the end !!!
