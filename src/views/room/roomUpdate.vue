@@ -27,7 +27,7 @@
 
             <el-form-item label="房间类型" prop="roomType">
               <el-select v-model.trim="temp.roomType" class="filter-item" style="width: 100%;" placeholder="请选择房间类型">
-                <el-option v-for="item in roomTypeList" :key="item.key" :label="item.label" :value="item.value" />
+                <el-option v-for="item in roomTypeList" :key="item.id" :label="item.name" :value="item.id" />
               </el-select>
             </el-form-item>
 
@@ -63,10 +63,17 @@
             </el-form-item>
 
             <el-form-item label="是否特价房" prop="isSpecialOffer">
-              <el-select v-model.trim="temp.isSpecialOffer" class="filter-item" style="width: 100%;" placeholder="请选择特价房状态">
+              <el-select v-model.trim="temp.isSpecialOffer" class="filter-item" style="width: 100%;"
+                placeholder="请选择特价房状态">
                 <el-option :key="0" :label="'非特价'" :value="0" />
                 <el-option :key="1" :label="'特价'" :value="1" />
               </el-select>
+            </el-form-item>
+
+            <el-form-item label="房间现价" prop="roomConfiguration">
+              <el-checkbox-group v-model="roomConfiguration">
+                <el-checkbox v-for="item in roomConfigurationList" :label="item.key">{{ item.label }}</el-checkbox>
+              </el-checkbox-group>
             </el-form-item>
 
           </div>
@@ -77,8 +84,8 @@
         <el-col :span="24">
           <div style="width: 80%;">
             <el-form-item label="房间主图">
-              <el-upload ref="upload" class="avatar-uploader" action="#" :show-file-list="false" :http-request="uploadSectionFile"
-                :auto-upload="true" :before-upload="beforeAvatarUpload">
+              <el-upload ref="upload" class="avatar-uploader" action="#" :show-file-list="false"
+                :http-request="uploadSectionFile" :auto-upload="true" :before-upload="beforeAvatarUpload">
                 <img v-if="temp.mainImage" :src="baseURL+temp.mainImage" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
               </el-upload>
@@ -120,7 +127,9 @@
   import {
     upload
   } from '@/api/file'
-
+  import {
+    roomTypeList
+  } from '@/api/roomType'
   export default {
     components: {
       VueUeditorWrap,
@@ -136,36 +145,71 @@
         temp: {
           mainImage: ''
         },
-        roomTypeList: [
-          {
+        roomTypeList: [],
+        roomConfiguration:[],
+        roomConfigurationList: [{
             key: 0,
-            value: 0,
-            label: "普通标间"
+            label: '自助入住'
           },
           {
             key: 1,
-            value: 1,
-            label: "双人间"
+            label: '电梯'
           },
           {
             key: 2,
-            value: 2,
-            label: "大床房"
+            label: '空调'
+          },
+          {
+            key: 2,
+            label: '洗衣机'
           },
           {
             key: 3,
-            value: 3,
-            label: "商务双人间"
+            label: '无线网络'
           },
           {
             key: 4,
-            value: 4,
-            label: "商务标间"
+            label: '衣架'
           },
           {
             key: 5,
-            value: 5,
-            label: "景区特供豪华套间"
+            label: '洗发水'
+          },
+          {
+            key: 6,
+            label: '按摩浴缸'
+          },
+          {
+            key: 7,
+            label: '吹风机'
+          },
+          {
+            key: 8,
+            label: '热水'
+          },
+          {
+            key: 9,
+            label: '冰箱'
+          },
+          {
+            key: 10,
+            label: '热水壶'
+          },
+          {
+            key: 11,
+            label: '一氧化碳报警器'
+          },
+          {
+            key: 12,
+            label: '灭火器'
+          },
+          {
+            key: 13,
+            label: '洗手液'
+          },
+          {
+            key: 14,
+            label: '急救包'
           }
         ],
         imgNum: 0,
@@ -198,7 +242,7 @@
       }
     },
     created() {
-      // this.categoryData()
+      this.categoryData()
       this.id = this.$route.query.id
       console.log(this.id)
       if (this.id) {
@@ -294,8 +338,20 @@
         roomDetails(setData).then(res => {
           const temp = res.data
           this.imgArr = temp.roomImages.split(',')
+          if(this.temp.roomConfiguration){
+            this.roomConfiguration = this.temp.roomConfiguration.split(',')
+          }
+          
           // temp.attributeValues.reverse()
           this.temp = temp
+        })
+      },
+      categoryData() {
+        var setData = {}
+        setData.page = 1
+        setData.pageSize = 9999
+        roomTypeList(setData).then(res => {
+          this.roomTypeList = res.data.records
         })
       },
       exit() {
@@ -305,6 +361,8 @@
       },
       createData() { // 完成创建按钮
         this.temp.roomImages = this.imgArr.toString()
+        this.temp.roomConfiguration = this.roomConfiguration.toString()
+        
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             roomUpdate(this.temp, 'post').then((response) => {
@@ -324,6 +382,7 @@
       },
       updateData() { // 完成修改按钮
         this.temp.roomImages = this.imgArr.toString()
+        this.temp.roomConfiguration = this.roomConfiguration.toString()
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             roomUpdate(this.temp, 'put').then(() => {

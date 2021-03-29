@@ -38,11 +38,10 @@ module.exports = {
     },
     proxy: {
       '/api': {
-        // target: 'http://herbal.beetry.com',
-        target: 'http://127.0.0.1:8080',
+        target: 'http://101.37.253.98/',
         changeOrigin: true,
         pathRewrite: {
-          '^/api': '' // 通过pathRewrite重写地址，将前缀/api转为/
+          '^/api': '/api' // 通过pathRewrite重写地址，将前缀/api转为/
         }
       }
     }
