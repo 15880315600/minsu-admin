@@ -62,11 +62,11 @@
             </el-form-item>
 
             <el-form-item label="房间原价" prop="roomPriceNow">
-              <el-input v-model.trim="temp.roomPriceNow" step="0.1" placeholder="请输入房间原价" />
+              <el-input v-model.trim="temp.roomPriceOld" step="0.1" placeholder="请输入房间原价" />
             </el-form-item>
 
             <el-form-item label="房间现价" prop="roomPriceOld">
-              <el-input v-model.trim="temp.roomPriceOld" placeholder="请输入房间现价" />
+              <el-input v-model.trim="temp.roomPriceNow" placeholder="请输入房间现价" />
             </el-form-item>
 
             <el-form-item label="是否特价房" prop="isSpecialOffer">
