@@ -16,7 +16,14 @@
       <el-row :gutter="20" style="padding: 0 4%;">
         <el-col :span="12">
           <div style="width: 80%;">
-
+            <el-form-item label="门店" prop="storeId">
+              <el-select v-model.trim="temp.storeId" class="filter-item" style="width: 100%;" placeholder="请选择门店">
+                <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="房间标题" prop="tittle">
+              <el-input v-model.trim="temp.tittle" placeholder="请输入房间标题" />
+            </el-form-item>
             <el-form-item label="房间号" prop="roomNo">
               <el-input v-model.trim="temp.roomNo" placeholder="请输入产品名称" />
             </el-form-item>
@@ -69,6 +76,10 @@
                 <el-option :key="1" :label="'特价'" :value="1" />
               </el-select>
             </el-form-item>
+            <el-form-item label="房间描述" prop="roomDesc">
+              <el-input v-model.trim="temp.roomDesc" placeholder="请输入房间描述" />
+            </el-form-item>
+
 
             <el-form-item label="房间现价" prop="roomConfiguration">
               <el-checkbox-group v-model="roomConfiguration">
@@ -109,17 +120,11 @@
       </el-row>
     </el-form>
 
-    <div style="padding: 10px 76px 50px 76px;">
-      <p style="font-size: 14px;color: #606266;">产品详情</p>
-      <vue-ueditor-wrap v-model="temp.roomDetails" :config="myConfig" />
-    </div>
-
   </div>
 </template>
 
 <script>
   import Pagination from '@/components/Pagination'
-  import VueUeditorWrap from 'vue-ueditor-wrap'
   import {
     roomUpdate,
     roomDetails
@@ -130,9 +135,11 @@
   import {
     roomTypeList
   } from '@/api/roomType'
+  import {
+    storeList
+  } from '@/api/store'
   export default {
     components: {
-      VueUeditorWrap,
       Pagination
     },
     data() {
@@ -146,69 +153,70 @@
           mainImage: ''
         },
         roomTypeList: [],
-        roomConfiguration:[],
+        storeList: [],
+        roomConfiguration: [],
         roomConfigurationList: [{
-            key: 0,
+            key: '0',
             label: '自助入住'
           },
           {
-            key: 1,
+            key: '1',
             label: '电梯'
           },
           {
-            key: 2,
+            key: '2',
             label: '空调'
           },
           {
-            key: 2,
+            key: '15',
             label: '洗衣机'
           },
           {
-            key: 3,
+            key: '3',
             label: '无线网络'
           },
           {
-            key: 4,
+            key: '4',
             label: '衣架'
           },
           {
-            key: 5,
+            key: '5',
             label: '洗发水'
           },
           {
-            key: 6,
+            key: '6',
             label: '按摩浴缸'
           },
           {
-            key: 7,
+            key:'7',
             label: '吹风机'
           },
           {
-            key: 8,
+            key: '8',
             label: '热水'
           },
           {
-            key: 9,
+            key: '9',
             label: '冰箱'
           },
           {
-            key: 10,
+            key: '10',
             label: '热水壶'
           },
           {
-            key: 11,
+            key: '11',
             label: '一氧化碳报警器'
           },
           {
-            key: 12,
+            key: '12',
             label: '灭火器'
           },
           {
-            key: 13,
+            key: '13',
             label: '洗手液'
           },
           {
-            key: 14,
+            key: '14',
             label: '急救包'
           }
         ],
@@ -224,19 +232,6 @@
         mdlistQuerygg: {
           page: 1,
           pageSize: 10
-        },
-        myConfig: {
-          // 编辑器不自动被内容撑高
-          autoHeightEnabled: true,
-          // 初始容器高度
-          initialFrameHeight: 800,
-          // 初始容器宽度
-          initialFrameWidth: '96%',
-          // 上传文件接口（这个地址是我为了方便各位体验文件上传功能搭建的临时接口，请勿在生产环境使用！！！）
-          serverUrl: '/api/UEditor',
-          // http://35.201.165.105:8000/controller.php
-          // UEditor 资源文件的存放路径，如果你使用的是 vue-cli 生成的项目，通常不需要设置该选项，vue-ueditor-wrap 会自动处理常见的情况，如果需要特殊配置，参考下方的常见问题2
-          UEDITOR_HOME_URL: './UEditor/'
         },
         rules: {}
       }
@@ -338,10 +333,11 @@
         roomDetails(setData).then(res => {
           const temp = res.data
           this.imgArr = temp.roomImages.split(',')
-          if(this.temp.roomConfiguration){
-            this.roomConfiguration = this.temp.roomConfiguration.split(',')
+          if (temp.roomConfiguration) {
+            this.roomConfiguration = temp.roomConfiguration.split(',')
+            console.log(this.roomConfiguration)
           }
-          
+
           // temp.attributeValues.reverse()
           this.temp = temp
         })
@@ -353,6 +349,9 @@
         roomTypeList(setData).then(res => {
           this.roomTypeList = res.data.records
         })
+        storeList(setData).then(response => {
+          this.storeList = response.data.records
+        })
       },
       exit() {
         this.$router.push({
@@ -362,7 +361,7 @@
       createData() { // 完成创建按钮
         this.temp.roomImages = this.imgArr.toString()
         this.temp.roomConfiguration = this.roomConfiguration.toString()
-        
+
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             roomUpdate(this.temp, 'post').then((response) => {
