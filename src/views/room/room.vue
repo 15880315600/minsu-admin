@@ -68,7 +68,7 @@
 
       <el-table-column label="房间类型" align="center">
         <template slot-scope="scope">
-          <span v-for="item in roomTypeList" v-if="item.value == scope.row.roomType">{{ item.label }}</span>
+          <span v-for="item in roomTypeList" v-if="item.id == scope.row.roomType">{{ item.name }}</span>
         </template>
       </el-table-column>
 
@@ -143,6 +143,9 @@
     roomDelete,
     upDownroom
   } from '@/api/room'
+  import {
+    roomTypeList
+  } from '@/api/roomType'
   import Pagination from '@/components/Pagination'
 
   export default {
@@ -169,41 +172,12 @@
           priceFlag: '',
           line: ''
         },
-        roomTypeList: [{
-            key: 0,
-            value: 0,
-            label: "普通标间"
-          },
-          {
-            key: 1,
-            value: 1,
-            label: "双人间"
-          },
-          {
-            key: 2,
-            value: 2,
-            label: "大床房"
-          },
-          {
-            key: 3,
-            value: 3,
-            label: "商务双人间"
-          },
-          {
-            key: 4,
-            value: 4,
-            label: "商务标间"
-          },
-          {
-            key: 5,
-            value: 5,
-            label: "景区特供豪华套间"
-          }
-        ],
+        roomTypeList: [],
         dialogFormVisible: false
       }
     },
     created() {
+      this.categoryData()
       // 其他页面返回时，保存搜索状态
       var roomListQuery = JSON.parse(sessionStorage.getItem('roomListQuery'))
       if (roomListQuery) {
@@ -221,6 +195,14 @@
           this.total = response.data.total
 
           this.listLoading = false
+        })
+      },
+      categoryData() {
+        var setData = {}
+        setData.page = 1
+        setData.pageSize = 9999
+        roomTypeList(setData).then(res => {
+          this.roomTypeList = res.data.records
         })
       },
       getData() {
