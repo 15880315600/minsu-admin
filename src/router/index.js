@@ -87,12 +87,20 @@ export const constantRoutes = [{
         }
       },
       {
-        path: 'orderAdd',
-        name: 'OrderAdd',
-        hidden: true,
-        component: () => import('@/views/order/orderAdd'),
+        path: 'reservation',
+        name: 'Reservation',
+        component: () => import('@/views/order/reservation'),
         meta: {
-          title: '添加订单',
+          title: '预定列表'
+        }
+      },
+      {
+        path: 'reservationAdd',
+        name: 'ReservationAdd',
+        hidden: true,
+        component: () => import('@/views/order/reservationAdd'),
+        meta: {
+          title: '添加预定记录',
           activeMenu: '/order/orderList'
         }
       }

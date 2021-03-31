@@ -119,7 +119,7 @@
           if (valid) {
             orderTableAdd(this.temp).then((response) => {
               this.$router.push({
-                path: this.redirect || '/order/orderList'
+                path: this.redirect || '/order/reservation'
               })
               this.$notify({
                 title: '成功',
