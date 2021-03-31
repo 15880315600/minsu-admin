@@ -9,7 +9,7 @@
 
       <div><label class="lm20 rm">房间类型</label>
         <el-select v-model.trim="listQuery.roomType" style="width: 280px" class="filter-item">
-          <el-option v-for="item in roomTypeList" :key="item.value" :label="item.label" :value="item.value" />
+          <el-option v-for="item in roomTypeList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
       </div>
 

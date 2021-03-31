@@ -69,67 +69,35 @@ export const constantRoutes = [{
       }
     }]
   },
-
   {
-    path: '/advertisement',
+    path: '/order',
     component: Layout,
-    redirect: '/advertisement/advertisement',
-    name: 'advertisement',
+    redirect: '/order/orderList',
+    name: 'order',
     meta: {
-      title: '广告管理',
+      title: '订单管理',
       icon: 'el-icon-picture',
     },
     children: [{
-        path: 'advertisement',
-        name: 'advertisementIndex',
-        component: () => import('@/views/advertisement/advertisement'),
+        path: 'orderList',
+        name: 'OrderList',
+        component: () => import('@/views/order/orderList'),
         meta: {
-          title: '广告列表'
+          title: '订单列表'
         }
       },
       {
-        path: 'advertisementUpdate',
-        name: 'advertisementUpdate',
+        path: 'orderAdd',
+        name: 'OrderAdd',
         hidden: true,
-        component: () => import('@/views/advertisement/advertisementUpdate'),
+        component: () => import('@/views/order/orderAdd'),
         meta: {
-          title: '编辑广告',
-          activeMenu: '/advertisement/advertisement'
+          title: '添加订单',
+          activeMenu: '/order/orderList'
         }
       }
     ]
   },
-
-  {
-    path: '/notice',
-    component: Layout,
-    redirect: '/notice/notice',
-    name: 'notice',
-    meta: {
-      title: '公告管理',
-      icon: 'el-icon-picture',
-    },
-    children: [{
-        path: 'notice',
-        name: 'noticeIndex',
-        component: () => import('@/views/notice/notice'),
-        meta: {
-          title: '公告列表'
-        }
-      },
-      {
-        path: 'noticeUpdate',
-        name: 'noticeUpdate',
-        hidden: true,
-        component: () => import('@/views/notice/noticeUpdate'),
-        meta: {
-          title: '编辑公告',
-          activeMenu: '/notice/notice'
-        }
-      }
-    ]
-  },
-  
   {
     path: '/roomType',
     component: Layout,
@@ -220,6 +188,65 @@ export const constantRoutes = [{
     ]
   },
 
+  {
+    path: '/advertisement',
+    component: Layout,
+    redirect: '/advertisement/advertisement',
+    name: 'advertisement',
+    meta: {
+      title: '广告管理',
+      icon: 'el-icon-picture',
+    },
+    children: [{
+        path: 'advertisement',
+        name: 'advertisementIndex',
+        component: () => import('@/views/advertisement/advertisement'),
+        meta: {
+          title: '广告列表'
+        }
+      },
+      {
+        path: 'advertisementUpdate',
+        name: 'advertisementUpdate',
+        hidden: true,
+        component: () => import('@/views/advertisement/advertisementUpdate'),
+        meta: {
+          title: '编辑广告',
+          activeMenu: '/advertisement/advertisement'
+        }
+      }
+    ]
+  },
+
+  {
+    path: '/notice',
+    component: Layout,
+    redirect: '/notice/notice',
+    name: 'notice',
+    meta: {
+      title: '公告管理',
+      icon: 'el-icon-picture',
+    },
+    children: [{
+        path: 'notice',
+        name: 'noticeIndex',
+        component: () => import('@/views/notice/notice'),
+        meta: {
+          title: '公告列表'
+        }
+      },
+      {
+        path: 'noticeUpdate',
+        name: 'noticeUpdate',
+        hidden: true,
+        component: () => import('@/views/notice/noticeUpdate'),
+        meta: {
+          title: '编辑公告',
+          activeMenu: '/notice/notice'
+        }
+      }
+    ]
+  },
   {
     path: '/admin',
     component: Layout,

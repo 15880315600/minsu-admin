@@ -49,20 +49,20 @@
       <el-table-column type="selection" width="40" align="center" />
       <el-table-column type="index" width="50" label="序号" align="center" />
 
-      <el-table-column align="center" label="类型名" width="160">
+      <el-table-column align="center" label="类型名">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
 
 
-	  <el-table-column label="创建时间" align="center" width="90">
+	  <el-table-column label="创建时间" align="center">
 	    <template slot-scope="scope">
 	      <span>{{ scope.row.createTime }}</span>
 	    </template>
 	  </el-table-column>
 
-      <el-table-column label="操作" align="center" width="120" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-dropdown>
             <span style=" cursor: pointer;color: #409EFF;">
