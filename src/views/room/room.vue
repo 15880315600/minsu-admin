@@ -2,12 +2,19 @@
   <div class="app-container">
     <div class="filter-container clearfix">
       <div>
-        <label class="rm">房间号</label>
+        <label class="rm">门店</label>
+        <el-select v-model.trim="listQuery.storeId" style="width: 280px" class="filter-item" @change="handleFilter">
+          <el-option v-for="item in storeList" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select>
+      </div>
+      <div>
+        <label class="lm20 rm">房间号</label>
         <el-input v-model.trim="listQuery.roomNo" placeholder="请输入" style="width: 200px;" class="filter-item"
           @keyup.enter.native="handleFilter" />
       </div>
 
-      <div><label class="lm20 rm">房间类型</label>
+      <div>
+        <label class="lm20 rm">房间类型</label>
         <el-select v-model.trim="listQuery.roomType" style="width: 280px" class="filter-item">
           <el-option v-for="item in roomTypeList" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
@@ -33,16 +40,27 @@
         </el-button>
       </div>
 
+    </div>
+
+    <div class="filter-container clearfix">
+      <div>
+        <el-button class="filter-item" icon="el-icon-delete" type="primary" @click="handleBatchDelete">
+          批量删除
+        </el-button>
+      </div>
+
+
       <div class="fr">
         <el-button class="filter-item" style="margin-left: 10px;" icon="el-icon-plus" type="primary"
           @click="handleCreate">
           新增
         </el-button>
       </div>
+
       <div class="fr">
-        <el-button class="filter-item" style="margin-left: 10px;" icon="el-icon-delete" type="primary"
-          @click="handleBatchDelete">
-          批量删除
+        <el-button class="filter-item" style="margin-left: 10px;" icon="el-icon-plus" type="primary"
+          @click="handleBulk">
+          添加团购
         </el-button>
       </div>
 
@@ -134,6 +152,44 @@
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.pageSize"
       @pagination="fetchData" />
 
+    <el-dialog title="团购订单" :visible.sync="dialogFormVisible">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-width="88px" style="width: 400px; margin: 0 auto;">
+        <el-form-item label="房间描述" prop="roomDesc">
+          <el-input v-model.trim="temp.roomDesc" placeholder="请输入房间描述" />
+        </el-form-item>
+        <el-form-item label="团购价格" prop="groupPrice">
+          <el-input v-model.trim="temp.groupPrice" placeholder="请输入团购价格" />
+        </el-form-item>
+        <el-form-item label="预约日期" prop="reserveTimeStart">
+          <el-date-picker v-model.trim="date" type="daterange" format="yyyy-MM-dd" value-format="yyyy-MM-dd HH:mm:ss"
+            :default-time="['00:00:00', '23:59:59']" :picker-options="pickerOptions" style="width: 100%;"
+            range-separator="至" start-placeholder="预约日期" end-placeholder="预约日期" align="right" @change="addDate" />
+        </el-form-item>
+
+        <el-form-item label="预定日期" prop="groupStartDate">
+          <el-date-picker v-model.trim="date1" type="daterange" format="yyyy-MM-dd" value-format="yyyy-MM-dd HH:mm:ss"
+            :default-time="['00:00:00', '23:59:59']" :picker-options="pickerOptions" style="width: 100%;"
+            range-separator="至" start-placeholder="预定日期" end-placeholder="预定日期" align="right" @change="addDate1" />
+        </el-form-item>
+
+        <el-form-item label="居住人数" prop="canResideNum">
+          <el-input v-model.trim="temp.canResideNum" placeholder="请输入居住人数" />
+        </el-form-item>
+
+        <el-form-item label="备注">
+          <el-input v-model.trim="temp.remark" placeholder="请输入备注" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" @click="createData()">
+          确认
+        </el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -143,6 +199,12 @@
     roomDelete,
     upDownroom
   } from '@/api/room'
+  import {
+    storeList
+  } from '@/api/store'
+  import {
+    groupRoomInfoAdd
+  } from '@/api/order'
   import {
     roomTypeList
   } from '@/api/roomType'
@@ -163,6 +225,8 @@
         temp: {},
         pushClass: [],
         category: [],
+        date: [],
+        date1: [],
         multipleSelection: [],
         dictionariesAis: [],
         listQuery: {
@@ -170,10 +234,17 @@
           pageSize: 10,
           salesFlag: '',
           priceFlag: '',
-          line: ''
+          line: '',
+          storeId: ''
         },
         roomTypeList: [],
-        dialogFormVisible: false
+        storeList: [],
+        dialogFormVisible: false,
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 8.64e7; //如果没有后面的-8.64e7就是不可以选择今天的
+          }
+        },
       }
     },
     created() {
@@ -190,9 +261,9 @@
     methods: {
       fetchData() { // 查
         this.listLoading = true
-        roomList(this.listQuery).then(response => {
-          this.list = response.data.records
-          this.total = response.data.total
+        roomList(this.listQuery).then(res => {
+          this.list = res.data.records
+          this.total = res.data.total
 
           this.listLoading = false
         })
@@ -204,14 +275,11 @@
         roomTypeList(setData).then(res => {
           this.roomTypeList = res.data.records
         })
-      },
-      getData() {
-        pushClassificationList({
-          page: 1,
-          pageSize: 100
-        }).then(res => {
-          this.pushClass = res.data.records
-          this.dialogFormVisible = true
+        var setData = {}
+        setData.page = 1
+        setData.pageSize = 9999
+        storeList(setData).then(res => {
+          this.storeList = res.data.records
         })
       },
       handleCreate() { // 添加按钮
@@ -249,31 +317,6 @@
           })
         })
       },
-      handlePush(row) { // 推送按钮
-        this.getData()
-        this.temp = {
-          roomId: row.id,
-          roomPushSort: '',
-          roomPushTypeId: ''
-
-        }
-      },
-      createData() {
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
-            roomDeliveryUpdate(this.temp, 'post').then(() => {
-              this.dialogFormVisible = false
-              this.$notify({
-                title: '成功',
-                message: '创建成功',
-                type: 'success',
-                duration: 2000
-              })
-              this.fetchData()
-            })
-          }
-        })
-      },
       handleSelectionChange(val) {
         this.multipleSelection = val
       },
@@ -295,22 +338,16 @@
         })
       },
       handleBatchDelete() {
-        var str = ''
-        var that = this
-        const length = this.multipleSelection.length
-        this.multipleSelection.forEach((item, index) => {
-          if (index == length - 1) {
-            str += item.id
-          } else {
-            str += item.id + ','
-          }
+        var str = this.multipleSelection.map(item => {
+          return item.id
         })
-        const setData = {}
-        setData.ids = str
-        if (!str) {
+
+        if (str == null || str.length <= 0) {
           this.$message.error('请选择您要删除的产品~')
           return
         }
+        const setData = {}
+        setData.ids = str.toString()
         this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -324,6 +361,58 @@
             })
           })
         })
+      },
+      handleBulk() {
+        if (!this.listQuery.storeId) {
+          this.$message.error('请选择门店~，确保团购订单全部属于同一个门店')
+          return
+        }
+        var str = this.multipleSelection.map(item => {
+          return item.id
+        })
+
+        if (str == null || str.length <= 0) {
+          this.$message.error('请选择您添加的房间~')
+          return
+        }
+        this.temp.ids = str.toString()
+        this.dialogFormVisible = true
+      },
+      createData() {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            groupRoomInfoAdd(this.temp).then(() => {
+              this.dialogFormVisible = false
+              this.$notify({
+                title: '成功',
+                message: '创建成功',
+                type: 'success',
+                duration: 2000
+              })
+              this.fetchData()
+            })
+          }
+        })
+      },
+      addDate() {
+        console.log(this.date)
+        if (this.date) {
+          this.temp.reserveTimeStart = this.date[0]
+          this.temp.reserveTimeEnd = this.date[1]
+        } else {
+          this.temp.reserveTimeStart = ''
+          this.temp.reserveTimeEnd = ''
+        }
+      },
+      addDate1() {
+        console.log(this.date)
+        if (this.date) {
+          this.temp.groupStartDate = this.date1[0]
+          this.temp.groupEndDate = this.date1[1]
+        } else {
+          this.temp.groupStartDate = ''
+          this.temp.groupEndDate = ''
+        }
       },
       handleFilter() {
         this.listQuery.page = 1

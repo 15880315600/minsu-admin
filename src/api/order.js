@@ -32,3 +32,11 @@ export function roomReserveRecordWriteOff(params) { // 订单
     params
   })
 }
+// 团购订单
+export function groupRoomInfoAdd(data) { // 订单
+  return request({
+    url: '/group_room_info',
+    method: 'post',
+    data
+  })
+}
