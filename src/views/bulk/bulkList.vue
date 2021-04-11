@@ -39,11 +39,18 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="可居住人数" align="center">
+      <el-table-column label="房间数" align="center" width="80">
+        <template slot-scope="scope">
+          <span>{{ scope.row.roomNum }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="可居住人数" align="center" width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.canResideNum }}</span>
         </template>
       </el-table-column>
+
       <el-table-column label="剩余可预约房间id" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.restRoomId }}</span>
