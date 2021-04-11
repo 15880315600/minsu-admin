@@ -40,3 +40,11 @@ export function groupRoomInfoAdd(data) { // 订单
     data
   })
 }
+// 团购订单
+export function groupRoomInfoList(params) { // 订单
+  return request({
+    url: '/group_room_info/query_page',
+    method: 'get',
+    params
+  })
+}

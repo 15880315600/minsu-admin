@@ -196,6 +196,26 @@ export const constantRoutes = [{
     ]
   },
 
+
+  {
+    path: '/bulk',
+    component: Layout,
+    redirect: '/bulk/bulkList',
+    name: 'Bulk',
+    meta: {
+      title: '团购列表',
+      icon: 'el-icon-picture',
+    },
+    children: [{
+      path: 'bulkList',
+      name: 'BulkList',
+      component: () => import('@/views/bulk/bulkList'),
+      meta: {
+        title: '团购列表'
+      }
+    }]
+  },
+
   {
     path: '/advertisement',
     component: Layout,
