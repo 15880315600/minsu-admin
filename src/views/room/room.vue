@@ -375,7 +375,7 @@
           this.$message.error('请选择您添加的房间~')
           return
         }
-        this.temp.ids = str.toString()
+        this.temp.roomId = str.toString()
         this.dialogFormVisible = true
       },
       createData() {
